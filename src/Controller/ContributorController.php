@@ -24,7 +24,7 @@ class ContributorController extends AbstractFOSRestController
 {
     /**
      * List of contributors
-     * @Rest\Get("/contributors")
+     * @Rest\Get("/contributor")
      * @OA\Tag(name="Contributors")
      */
     public function getContributors(ContributorRepository $contributorRepository)
@@ -34,12 +34,13 @@ class ContributorController extends AbstractFOSRestController
 
     /**
      * Add a new contributor
-     * @Rest\Post ("/contributor")
+     * @Rest\Post("/contributor")
      * @OA\RequestBody(
      *     required=true,
      *     @Model(type=Contributor::class, groups={"contributorBody"})
      * )
      * @OA\Tag(name="Contributors")
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
     public function newContributor(ContributorRepository $contributorRepository,Request $request)
     {
@@ -58,6 +59,7 @@ class ContributorController extends AbstractFOSRestController
      *     @Model(type=Contributor::class, groups={"contributorBody","contributorId"})
      * )
      * @OA\Tag(name="Contributors")
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
     public function updateContributor(ContributorRepository $contributorRepository,Request $request)
     {
@@ -75,6 +77,7 @@ class ContributorController extends AbstractFOSRestController
      *     @Model(type=Contributor::class, groups={"contributorId"})
      * )
      * @OA\Tag(name="Contributors")
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
     public function deleteContributor(ContributorRepository $contributorRepository,Request $request)
     {

@@ -136,17 +136,23 @@ class BookRepository extends ServiceEntityRepository
     public function searchBook($params)
     {
         try {
-            $result =  $this->createQueryBuilder("b")
+            $tmp =  $this->createQueryBuilder("b")
                 ->select("b.name as book_name")
                 ->addSelect("c.name as contributor_name")
                 ->addSelect("c.surname as contributor_surname")
-                ->leftJoin("b.contributor","c")
-                ->orWhere('b.name LIKE :book_name')
-                ->setParameter('book_name', '%'.$params->{'book_name'}.'%')
-                ->orWhere('c.name LIKE :contributor_name')
-                ->setParameter('contributor_name', '%'.$params->{'contributor_name'}.'%')
-                ->getQuery()
+                ->leftJoin("b.contributor","c");
+            if(isset($params->{'book_name'})){
+                $tmp = $tmp->orWhere('b.name LIKE :book_name')
+                    ->setParameter('book_name', '%'.$params->{'book_name'}.'%');
+            }
+            if(isset($params->{'contributor_name'})){
+                $tmp = $tmp->orWhere('c.name LIKE :contributor_name')
+                    ->setParameter('contributor_name', '%'.$params->{'contributor_name'}.'%');
+            }
+            $tmp = $tmp->getQuery()
                 ->getArrayResult();
+
+            $result = $tmp;
 
         }catch (\Exception $exception){
             $result = $exception->getMessage();

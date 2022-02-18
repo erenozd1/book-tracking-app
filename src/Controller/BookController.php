@@ -27,7 +27,6 @@ class BookController extends AbstractFOSRestController
      *
      * @Rest\Get("/books")
      * @OA\Tag(name="Books")
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
     public function bookWithContributor(BookRepository $bookRepository)
     {
@@ -59,6 +58,7 @@ class BookController extends AbstractFOSRestController
      *     @Model(type=Book::class, groups={"bookBody","bookId"})
      * )
      * @OA\Tag(name="Books")
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
     public function setBook(BookRepository $bookRepository,Request $request)
     {
@@ -75,6 +75,7 @@ class BookController extends AbstractFOSRestController
      *     @Model(type=Book::class, groups={"bookId"})
      * )
      * @OA\Tag(name="Books")
+     * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
     public function deleteBook(BookRepository $bookRepository,Request $request)
     {

@@ -42,7 +42,6 @@ class UserBookRepository extends ServiceEntityRepository
      */
     public function addUserBook($params)
     {
-
         $result = ['status' => 'success','message'=>'İşlem Başarılı'];
 
         try {

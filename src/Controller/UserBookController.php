@@ -27,6 +27,7 @@ class UserBookController extends AbstractFOSRestController
      * List of user's read status of books
      * @Rest\Get ("/userBook")
      * @OA\Tag(name="UsersBooks")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function userBooks(UserBookRepository $userBookRepository)
     {
@@ -40,6 +41,7 @@ class UserBookController extends AbstractFOSRestController
      *     @Model(type=UserBook::class, groups={"UserBookBody"})
      * )
      * @OA\Tag(name="UsersBooks")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function addNewBookUser(UserBookRepository $userBookRepository, Request $request)
     {
