@@ -57,9 +57,51 @@ class ContributorRepository extends ServiceEntityRepository
         try {
             $em = $this->getEntityManager();
             $newContributor = new Contributor();
-            $newContributor->setName($params->name);
-            $newContributor->setSurname($params->surname);
+            $newContributor->setName($params->{'name'});
+            $newContributor->setSurname($params->{'surname'});
             $em->persist($newContributor);
+            $em->flush();
+
+        }catch (\Exception $exception){
+            $result['status'] = false;
+            $result['message']= $exception->getMessage();
+        }
+        return $result;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function updateContributor($params)
+    {
+        $result = ['status' => 'success','message'=>'İşlem Başarılı'];
+
+        try {
+            $em = $this->getEntityManager();
+            $setContributor = $em->find(Contributor::class, $params->{'id'});
+            $setContributor->setName($params->{'name'});
+            $setContributor->setSurname($params->{'surname'});
+            $em->persist($setContributor);
+            $em->flush();
+
+        }catch (\Exception $exception){
+            $result['status'] = false;
+            $result['message']= $exception->getMessage();
+        }
+        return $result;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function deleteContributor($params)
+    {
+        $result = ['status' => 'success','message'=>'İşlem Başarılı'];
+
+        try {
+            $em = $this->getEntityManager();
+            $contributor = $em->find(Contributor::class, $params->{'id'});
+            $em->remove($contributor);
             $em->flush();
 
         }catch (\Exception $exception){

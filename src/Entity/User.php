@@ -27,6 +27,12 @@ class User extends BaseUser
      * @ORM\OneToMany(targetEntity=UserBook::class, mappedBy="usr")
      */
     private $userBooks;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone", type="string", length=255,nullable=true)
+     */
+    private $phone;
 
 
 
@@ -67,6 +73,22 @@ class User extends BaseUser
         }
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone(): string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param string $phone
+     */
+    public function setPhone(string $phone): void
+    {
+        $this->phone = $phone;
     }
 
 

@@ -72,7 +72,7 @@ class SecurityController extends AbstractFOSRestController
     }
 
     /**
-     * Register as a user
+     * Register as  user
      * @FOSRest\Post("/register")
      * @param Request $request
      * @return bool|string
@@ -84,7 +84,8 @@ class SecurityController extends AbstractFOSRestController
      *          required={"email","username","password"},
      *          @OA\Property(property="email", type="string", example="example@flowq.com"),
      *          @OA\Property(property="username", type="string", example="example123"),
-     *          @OA\Property(property="password", type="string", example="examplexxx")
+     *          @OA\Property(property="password", type="string", example="examplexxx"),
+     *          @OA\Property(property="phone", type="string", example="0555XXXXXXX")
      *      )
      *  )
      *)
@@ -107,6 +108,41 @@ class SecurityController extends AbstractFOSRestController
     }
 
     /**
+     * Update an existing user
+     * @FOSRest\Put("/update")
+     * @param Request $request
+     * @return bool|string
+
+     * @OA\RequestBody(
+     *  @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(
+     *          required={"email","username","password"},
+     *          @OA\Property(property="email", type="string", example="example@flowq.com"),
+     *          @OA\Property(property="username", type="string", example="example123"),
+     *          @OA\Property(property="password", type="string", example="examplexxx"),
+     *          @OA\Property(property="phone", type="string", example="0555XXXXXXX")
+     *      )
+     *  )
+     *)
+     * @OA\Tag(name="User")
+     */
+    public function updateUserAction(Request $request){
+
+        $request = json_decode($request->getContent(),true);
+        $response = ['status' => 'success', 'message'=>''];
+        $succesfullyRegistered = $this->updateUser($this->userManager , $request);
+        if($succesfullyRegistered){
+            $response['message'] = 'Bilgileriniz başarıyla güncellendi';
+        }else{
+            $response['status'] = 'failed';
+            $response['message'] = 'Bu email zaten kayıtlı';
+        }
+
+        return $response;
+    }
+
+    /**
      * This method registers an user in the database manually.
      *
      * @return boolean User registered / not registered
@@ -117,13 +153,34 @@ class SecurityController extends AbstractFOSRestController
         if($email_exist){
             return false;
         }
-
         $user = $userManager->createUser();
         $user->setUsername($request->username);
         $user->setEmail($request->email);
         $user->setEmailCanonical($request->email);
         $user->setEnabled(1);
         $user->setPlainPassword($request->password);
+        $user->setPhone($request->phone);
+        $userManager->updateUser($user);
+
+        return true;
+    }
+
+    /**
+     * This method update   an user in the database manually.
+     *
+     * @return boolean User registered / not registered
+     **/
+    private function updateUser($userManager, $request){
+        $user = $this->getUser();
+
+        if($user){
+            return false;
+        }
+        $user->setUsername($request['username']);
+        $user->setEmail($request['email']);
+        $user->setEmailCanonical($request['email']);
+        $user->setPlainPassword($request['password']);
+        $user->setPhone($request['phone']);
         $userManager->updateUser($user);
 
         return true;

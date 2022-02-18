@@ -23,44 +23,20 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 class BookController extends AbstractFOSRestController
 {
     /**
-     * List the book list.
-     *
+     * List of books.
      *
      * @Rest\Get("/books")
-     * @OA\Response(
-     *     response=200,
-     *     description="Returns list of books",
-     *     @OA\JsonContent(
-     *        type="array",
-     *        @OA\Items(ref=@Model(type=Book::class, groups={"full"}))
-     *     )
-     * )
      * @OA\Tag(name="Books")
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
-    public function bookWithContributor(BookRepository $bookRepository, Request $request)
-    {   $data = $request->getContent();
-        //return $data;
-        $data = $bookRepository->book_with_contributor();
-        $view = $this->view($data, 200);
-       // return  $this->getUser();
-
-        return $view;
+    public function bookWithContributor(BookRepository $bookRepository)
+    {
+        return $bookRepository->book_with_contributor();
     }
 
     /**
-     * Add new book.
-     *
+     * Add a new  book.
      * @Rest\Post("/books")
-     * @OA\Response(
-     *     response=200,
-     *     description="Returns the rewards of an user",
-     *     @OA\JsonContent(
-     *        type="array",
-     *        @OA\Items(ref=@Model(type=Book::class, groups={"full"}))
-     *     )
-     * )
-     *
      * @OA\RequestBody(
      *     required=true,
      *     @Model(type=Book::class, groups={"bookBody"})
@@ -72,33 +48,60 @@ class BookController extends AbstractFOSRestController
     {
         $params =  json_decode($request->getContent());
 
-         return $bookRepository->newBook($params);
+        return $bookRepository->newBook($params);
     }
 
     /**
-     * Add new book.
-     *
-     * @Rest\Post("/books")
-     * @OA\Response(
-     *     response=200,
-     *     description="Returns the rewards of an user",
-     *     @OA\JsonContent(
-     *        type="array",
-     *        @OA\Items(ref=@Model(type=Book::class, groups={"full"}))
-     *     )
-     * )
-     *
+     * Update a book.
+     * @Rest\Put("/books")
      * @OA\RequestBody(
      *     required=true,
-     *     @Model(type=Book::class, groups={"bookBody"})
+     *     @Model(type=Book::class, groups={"bookBody","bookId"})
      * )
      * @OA\Tag(name="Books")
-     * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
     public function setBook(BookRepository $bookRepository,Request $request)
     {
         $params =  json_decode($request->getContent());
 
-        return $bookRepository->newBook($params);
+        return $bookRepository->updateBook($params);
+    }
+
+    /**
+     * Delete a book.
+     * @Rest\Delete("/books")
+     * @OA\RequestBody(
+     *     required=true,
+     *     @Model(type=Book::class, groups={"bookId"})
+     * )
+     * @OA\Tag(name="Books")
+     */
+    public function deleteBook(BookRepository $bookRepository,Request $request)
+    {
+        $params =  json_decode($request->getContent());
+
+        return $bookRepository->deleteBook($params);
+    }
+
+    /**
+     * Search a book with book name or contributor name.
+     * @Rest\Post("/search_book")
+     * @OA\RequestBody(
+     *  @OA\MediaType(
+     *      mediaType="application/json",
+     *      @OA\Schema(
+     *          required={"book_name"},
+     *          @OA\Property(property="book_name", type="string"),
+     *          @OA\Property(property="contributor_name", type="string")
+     *      )
+     *  )
+     *)
+     * @OA\Tag(name="Search")
+     */
+    public function searchBook(BookRepository $bookRepository,Request $request)
+    {
+        $params =  json_decode($request->getContent());
+
+        return $bookRepository->searchBook($params);
     }
 }

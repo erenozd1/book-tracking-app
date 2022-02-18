@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserBookRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserBookRepository::class)
@@ -14,25 +15,39 @@ class UserBook
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"UserBookBody"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Book::class, inversedBy="userBooks")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(columnDefinition="book_id")
      */
     private $book;
 
     /**
+     * @Groups({"UserBookBody"})
+     * @ORM\Column(type="integer",nullable=false)
+     */
+    private $book_id;
+
+    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userBooks")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(columnDefinition="usr_id")
      */
     private $usr;
 
     /**
+     * @Groups({"UserBookBody"})
+     * @ORM\Column(type="integer",nullable=false)
+     */
+    private $usr_id;
+
+    /**
+     * @Groups({"UserBookBody"})
      * @ORM\Column(type="integer")
      */
-    private $is_readed;
+    private $is_readied;
 
     public function getId(): ?int
     {
@@ -65,12 +80,12 @@ class UserBook
 
     public function getIsReaded(): ?int
     {
-        return $this->is_readed;
+        return $this->is_readied;
     }
 
-    public function setIsReaded(int $is_readed): self
+    public function setIsReadied(int $is_readied): self
     {
-        $this->is_readed = $is_readed;
+        $this->is_readed = $is_readied;
 
         return $this;
     }

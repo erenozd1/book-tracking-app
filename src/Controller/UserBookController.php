@@ -2,45 +2,48 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Entity\UserBook;
 use App\Repository\BookRepository;
 use App\Repository\UserBookRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\AnnotationsasRest;
+use FOS\RestBundle\Controller\FOSRestController;
+use OpenApi\Annotations as OA;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-class UserBookController extends AbstractController
+/**
+ * UserBookController
+ * @Route ("/api", name="api_")
+ */
+class UserBookController extends AbstractFOSRestController
 {
     /**
-     * @Route("/user/book", name="user_book")
+     * List of user's read status of books
+     * @Rest\Get ("/userBook")
+     * @OA\Tag(name="UsersBooks")
      */
-    public function index(UserBookRepository $userBookRepository): Response
+    public function userBooks(UserBookRepository $userBookRepository)
     {
-
-        $result = $userBookRepository->getUserBookWithNames();
-        dump($result);
-        exit;
-        return $this->render('user_book/index.html.twig', [
-            'controller_name' => 'UserBookController',
-        ]);
+        return $userBookRepository->getUserBookWithNames();
     }
 
     /**
-     * @Route ("/add_new_book_user/{book_id}/{user_id}/{is_readed}", name="add_new_book_user")
-     * @param UserBookRepository $userBookRepository
-     * @param $book_id
-     * @param $user_id
-     * @param $is_readed
-     * @return void
+     * @Rest\Post("/userBook")
+     * @OA\RequestBody(
+     *     required=true,
+     *     @Model(type=UserBook::class, groups={"UserBookBody"})
+     * )
+     * @OA\Tag(name="UsersBooks")
      */
-    public function addNewBookUser(UserBookRepository $userBookRepository, $book_id, $user_id, $is_readed)
+    public function addNewBookUser(UserBookRepository $userBookRepository, Request $request)
     {
-        $params['book_id'] = $book_id;
-        $params['user_id'] = $user_id;
-        $params['is_readed'] = $is_readed;
-        $result = $userBookRepository->addUserBook($params);
-        dump($result);
-        exit;
-
+        $params = json_decode($request->getContent());
+        return $userBookRepository->addUserBook($params);
     }
 }

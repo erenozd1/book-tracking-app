@@ -85,4 +85,73 @@ class BookRepository extends ServiceEntityRepository
         return $result;
     }
 
+    /**
+     * @return string[]
+     */
+    public function updateBook($params)
+    {
+        $result = ['status' => 'success','message'=>'İşlem Başarılı'];
+
+        try {
+            $em = $this->getEntityManager();
+            $setBook = $em->find(Book::class,$params->{'id'});
+            $setBook
+                ->setName($params->{'name'});
+            $setBook
+                ->setAmount($params->{'amount'});
+            $setBook
+                ->setPrice($params->{'price'});
+            $setBook
+                ->setContributor($em->find(Contributor::class, $params->{'contributor_id'}));
+            $em->persist($setBook);
+            $em->flush();
+
+        }catch (\Exception $exception){
+            $result['status'] = false;
+            $result['message']= $exception->getMessage();
+        }
+        return $result;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function deleteBook($params)
+    {
+        $result = ['status' => 'success','message'=>'İşlem Başarılı'];
+
+        try {
+            $em = $this->getEntityManager();
+            $book = $em->find(Book::class, $params->{'id'});
+            $em->remove($book);
+            $em->flush();
+
+        }catch (\Exception $exception){
+            $result['status'] = false;
+            $result['message']= $exception->getMessage();
+        }
+        return $result;
+    }
+
+    public function searchBook($params)
+    {
+        try {
+            $result =  $this->createQueryBuilder("b")
+                ->select("b.name as book_name")
+                ->addSelect("c.name as contributor_name")
+                ->addSelect("c.surname as contributor_surname")
+                ->leftJoin("b.contributor","c")
+                ->orWhere('b.name LIKE :book_name')
+                ->setParameter('book_name', '%'.$params->{'book_name'}.'%')
+                ->orWhere('c.name LIKE :contributor_name')
+                ->setParameter('contributor_name', '%'.$params->{'contributor_name'}.'%')
+                ->getQuery()
+                ->getArrayResult();
+
+        }catch (\Exception $exception){
+            $result = $exception->getMessage();
+        }
+        return $result;
+    }
+
 }
