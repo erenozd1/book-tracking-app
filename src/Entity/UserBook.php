@@ -15,7 +15,6 @@ class UserBook
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"UserBookBody"})
      */
     private $id;
 
@@ -85,7 +84,7 @@ class UserBook
 
     public function setIsReadied(int $is_readied): self
     {
-        $this->is_readed = $is_readied;
+        $this->is_readied = $is_readied;
 
         return $this;
     }

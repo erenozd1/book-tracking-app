@@ -59,13 +59,15 @@ class UserBookRepository extends ServiceEntityRepository
                 $newUserBook = $em->find(UserBook::class, $tmp_result[0]['id']);
             }else{
                 $newUserBook = new UserBook();
+                $newUserBook
+                    ->setBook($em->find(Book::class, $params->{'book_id'}));
+                $newUserBook
+                    ->setUsr($em->find(User::class, $params->{'usr_id'}));
             }
+
             $newUserBook
                 ->setIsReadied($params->{'is_readied'});
-            $newUserBook
-                ->setBook($em->find(Book::class, $params->{'book_id'}));
-            $newUserBook
-                ->setUsr($em->find(User::class, $params->{'usr_id'}));
+
 
             $em->persist($newUserBook);
             $em->flush();
