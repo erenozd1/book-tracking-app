@@ -30,7 +30,7 @@ class BookController extends AbstractFOSRestController
      */
     public function bookWithContributor(BookRepository $bookRepository)
     {
-        return $bookRepository->book_with_contributor();
+        return $bookRepository->bookWithContributor();
     }
 
     /**
@@ -69,19 +69,13 @@ class BookController extends AbstractFOSRestController
 
     /**
      * Delete a book.
-     * @Rest\Delete("/books")
-     * @OA\RequestBody(
-     *     required=true,
-     *     @Model(type=Book::class, groups={"bookId"})
-     * )
+     * @Rest\Delete("/books/{id}")
      * @OA\Tag(name="Books")
      * @Security("is_granted('ROLE_SUPER_ADMIN')")
      */
-    public function deleteBook(BookRepository $bookRepository,Request $request)
+    public function deleteBook(BookRepository $bookRepository,Book $book)
     {
-        $params =  json_decode($request->getContent());
-
-        return $bookRepository->deleteBook($params);
+        return $bookRepository->deleteBook($book);
     }
 
     /**

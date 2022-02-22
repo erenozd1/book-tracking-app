@@ -65,8 +65,10 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
-        }
+            "App\\": "src/",
+            "Console\\": "src"
+        },
+        "classmap": ["src"]
     },
     "autoload-dev": {
         "psr-4": {

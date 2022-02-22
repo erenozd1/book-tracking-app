@@ -46,7 +46,7 @@ class BookRepository extends ServiceEntityRepository
         ;
     }
 
-    public function book_with_contributor()
+    public function bookWithContributor()
     {
         return $this->createQueryBuilder("b")
             ->select("b.name as book_name")
@@ -116,13 +116,13 @@ class BookRepository extends ServiceEntityRepository
     /**
      * @return string[]
      */
-    public function deleteBook($params)
+    public function deleteBook($book)
     {
         $result = ['status' => 'success','message'=>'İşlem Başarılı'];
 
         try {
             $em = $this->getEntityManager();
-            $book = $em->find(Book::class, $params->{'id'});
+            //$book = $em->find(Book::class, $params->{'id'});
             $em->remove($book);
             $em->flush();
 
