@@ -9,12 +9,12 @@ use Symfony\Component\HttpClient\HttpClient;
 
 class WeatherCommand extends Command
 {
-    protected  static $defaultName ='app:weather';
+
     protected function configure()
     {
         $this->setName('weather')
             ->setDescription('Returns the weather information of the given city.')
-            ->setHelp('bin/console  app:weather (City Name) şeklinde çalıştırılabilir. ')
+            ->setHelp('php bin/console  weather (City Name) şeklinde çalıştırılabilir. ')
             ->addArgument('cityname', InputArgument::REQUIRED, 'Write a city name.');
     }
 
@@ -30,7 +30,6 @@ class WeatherCommand extends Command
                     ],
                 ]
             );
-
             $statusCode = $response->getStatusCode();
             $content = $response->getContent();
             $result = json_decode($content, true);
@@ -38,7 +37,6 @@ class WeatherCommand extends Command
             $output->writeln($exception->getMessage());
             return 0;
         }
-
         $output->writeln(sprintf('Weather in %s:', $input->getArgument('cityname')));
         $output->writeln(sprintf('Temperature is %s, condition is %s ', $result['current']['temp_c'],$result['current']['condition']['text'] ));
         return 0;
