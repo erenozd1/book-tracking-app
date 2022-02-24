@@ -1,6 +1,13 @@
 <?php
 namespace App\Controller;
+use App\Entity\AccessToken;
+use App\Entity\Book;
 use App\Entity\Client;
+use App\Entity\User;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use FOS\OAuthServerBundle\Controller\TokenController;
 use FOS\UserBundle\Form\Factory\FactoryInterface;
 use FOS\UserBundle\FOSUserBundle;
@@ -17,6 +24,7 @@ use OpenApi\Annotations as OA;
 use Symfony\Component\Routing\Annotation\Route;
 
 
+
 /**
  * @Route("/api",name="api_")
  */
@@ -26,11 +34,13 @@ class SecurityController extends AbstractFOSRestController
     private $tokenController;
     private $userManager;
 
-    public function __construct(ClientManagerInterface $client_manager, TokenController $tokenController, UserManagerInterface $userManager )
+    public function __construct(ClientManagerInterface $client_manager, TokenController $tokenController, UserManagerInterface $userManager,ORM\EntityManagerInterface $entityManager)
     {
         $this->client_manager = $client_manager;
         $this->tokenController = $tokenController;
         $this->userManager = $userManager;
+        $this->entityManager = $entityManager;
+
     }
     /**
      * Create Client and get an Access Token.
@@ -141,6 +151,25 @@ class SecurityController extends AbstractFOSRestController
 
         return $response;
     }
+    /**
+     * Create Client and get an Access Token.
+     * @FOSRest\Post("/logout")
+     *
+     * @OA\Tag(name="Login")
+     * @return Response
+     */
+    public function LogoutAction(Request $request){
+
+        $user = $this->getUser();
+        $user_id = $user->getId();
+
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult(AccessToken::class,'at');
+        $rsm->addFieldResult('at','id','id');
+        $query = $this->entityManager->createNativeQuery('SELECT * FROM  access_token WHERE user_id = :user_id', $rsm);
+        $query->setParameter('user_id',$user_id);
+        return $query->getResult();
+    }
 
     /**
      * This method registers an user in the database manually.
@@ -173,9 +202,6 @@ class SecurityController extends AbstractFOSRestController
     private function updateUser($userManager, $request){
         $user = $this->getUser();
 
-        if($user){
-            return false;
-        }
         $user->setUsername($request['username']);
         $user->setEmail($request['email']);
         $user->setEmailCanonical($request['email']);
@@ -185,4 +211,5 @@ class SecurityController extends AbstractFOSRestController
 
         return true;
     }
+
 }

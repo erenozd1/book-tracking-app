@@ -45,7 +45,9 @@ class UserBookController extends AbstractFOSRestController
      */
     public function addNewBookUser(UserBookRepository $userBookRepository, Request $request)
     {
-        $params = json_decode($request->getContent());
+        $params = json_decode($request->getContent(), true);
+        $params['user_id']= $this->getUser()->getId();
+
         return $userBookRepository->addUserBook($params);
     }
 }

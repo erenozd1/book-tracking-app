@@ -1,5 +1,5 @@
 <?php
-namespace Console\App\Commands;
+namespace App\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,10 +9,12 @@ use Symfony\Component\HttpClient\HttpClient;
 
 class WeatherCommand extends Command
 {
+    protected  static $defaultName ='app:weather';
     protected function configure()
     {
         $this->setName('weather')
             ->setDescription('Returns the weather information of the given city.')
+            ->setHelp('bin/console  app:weather (City Name) şeklinde çalıştırılabilir. ')
             ->addArgument('cityname', InputArgument::REQUIRED, 'Write a city name.');
     }
 

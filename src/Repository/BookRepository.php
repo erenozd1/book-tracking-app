@@ -6,6 +6,7 @@ use App\Entity\Book;
 use App\Entity\Contributor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * @method Book|null find($id, $lockMode = null, $lockVersion = null)
@@ -40,10 +41,9 @@ class BookRepository extends ServiceEntityRepository
 
     public function get()
     {
-        return $this->createQueryBuilder('b')
-            ->getQuery()
-            ->getArrayResult()
-        ;
+        $rsm = new ResultSetMapping();
+        $query = $this->entityManager->createNativeQuery('SELECT * FROM book', $rsm);
+        return $query->getResult();
     }
 
     public function bookWithContributor()

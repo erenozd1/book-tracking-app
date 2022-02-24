@@ -7,6 +7,7 @@ use App\Entity\UserBook;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use FOS\UserBundle\Model\UserManagerInterface;
 
 /**
  * @method UserBook|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,9 +17,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserBookRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $userManager;
+
+    public function __construct(ManagerRegistry $registry, UserManagerInterface $userManager)
     {
         parent::__construct($registry, UserBook::class);
+        $this->userManager = $userManager;
+
     }
 
     /**
@@ -46,13 +51,14 @@ class UserBookRepository extends ServiceEntityRepository
 
         try {
             $em = $this->getEntityManager();
+
             $query = $em->createQuery(
                 'SELECT ub.book_id, ub.usr_id, ub.is_readied,ub.id
                 FROM App\Entity\UserBook ub
                 WHERE ub.usr_id = :usr_id and ub.book_id = :book_id
            ')
-            ->setParameter('usr_id', $params->{'usr_id'})
-            ->setParameter('book_id', $params->{'book_id'});
+            ->setParameter('usr_id', $params['user_id'])
+            ->setParameter('book_id', $params['book_id']);
 
             $tmp_result = $query->getResult();
             if(count($tmp_result) != 0){
@@ -60,13 +66,13 @@ class UserBookRepository extends ServiceEntityRepository
             }else{
                 $newUserBook = new UserBook();
                 $newUserBook
-                    ->setBook($em->find(Book::class, $params->{'book_id'}));
+                    ->setBook($em->find(Book::class, $params['book_id']));
                 $newUserBook
-                    ->setUsr($em->find(User::class, $params->{'usr_id'}));
+                    ->setUsr($em->find(User::class, $params['usr_id']));
             }
 
             $newUserBook
-                ->setIsReadied($params->{'is_readied'});
+                ->setIsReadied($params['is_readied']);
 
 
             $em->persist($newUserBook);
