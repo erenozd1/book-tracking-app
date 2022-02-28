@@ -155,7 +155,7 @@ class SecurityController extends AbstractFOSRestController
      * Create Client and get an Access Token.
      * @FOSRest\Post("/logout")
      *
-     * @OA\Tag(name="Login")
+     * @OA\Tag(name="Logout")
      * @return Response
      */
     public function LogoutAction(Request $request){

@@ -32,8 +32,15 @@ class UserBook
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userBooks")
+     * @ORM\JoinColumn(columnDefinition="usr_id")
      */
     private $usr;
+
+    /**
+     * @Groups({"UserBookBody"})
+     * @ORM\Column(type="integer",nullable=false)
+     */
+    private $usr_id;
 
     /**
      * @Groups({"UserBookBody"})
