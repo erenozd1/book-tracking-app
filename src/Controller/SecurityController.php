@@ -162,11 +162,10 @@ class SecurityController extends AbstractFOSRestController
 
         $user = $this->getUser();
         $user_id = $user->getId();
-
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult(AccessToken::class,'at');
         $rsm->addFieldResult('at','id','id');
-        $query = $this->entityManager->createNativeQuery('SELECT * FROM  access_token WHERE user_id = :user_id', $rsm);
+        $query = $this->entityManager->createNativeQuery('DELETE  FROM  access_token WHERE user_id = :user_id', $rsm);
         $query->setParameter('user_id',$user_id);
         return $query->getResult();
     }
@@ -189,6 +188,7 @@ class SecurityController extends AbstractFOSRestController
         $user->setEnabled(1);
         $user->setPlainPassword($request->password);
         $user->setPhone($request->phone);
+        $user->setRoles(array('ROLE_USER'));
         $userManager->updateUser($user);
 
         return true;

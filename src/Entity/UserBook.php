@@ -11,14 +11,9 @@ use JMS\Serializer\Annotation\Groups;
  */
 class UserBook
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
+     * @ORM\Id
      * @ORM\ManyToOne(targetEntity=Book::class, inversedBy="userBooks")
      * @ORM\JoinColumn(columnDefinition="book_id")
      */
@@ -31,6 +26,7 @@ class UserBook
     private $book_id;
 
     /**
+     * @ORM\Id
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userBooks")
      * @ORM\JoinColumn(columnDefinition="usr_id")
      */
